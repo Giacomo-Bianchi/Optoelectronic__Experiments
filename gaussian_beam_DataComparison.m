@@ -49,10 +49,10 @@ lambda = 632.8e-6;     % lunghezza d'onda in mm (632.8 nm = 0.0006328 mm)
 W0     = 1;            % raggio del fascio al waist in mm (1 mm)
 k      = 2*pi / lambda; % numero d'onda [mm^-1]
 z0     = pi * W0^2 / lambda;  % raggio di Rayleigh in mm
-A0     = 10;            % ampiezza al waist
+A1     = 10^4;            % ampiezza al waist
 
 % Coordinata z in cui osservare la sezione trasversale (in mm)
-z_val  = 10;   % ad esempio, 10 mm
+z_val  = 100;   % ad esempio, 10 mm
 
 %% Definizione dominio per i dati calcolati
 % Usiamo l'intervallo reale dei dati come riferimento
@@ -71,7 +71,7 @@ y_vec = linspace(y_min, y_max, Ny);
 [X, Y] = meshgrid(x_vec, y_vec);
 
 % Calcoliamo campo e intensità del fascio gaussiano
-[Uxy, Ixy] = gaussian_beam_function(A0, W0, z0, k, X, Y, z_val);
+[Uxy, Ixy] = gaussian_beam_function(A1, W0, z0, k, X, Y, z_val);
 
 %% Visualizzazione dei dati
 DO_PLOTS = true; 

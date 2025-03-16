@@ -1,6 +1,8 @@
-function [Uxy, Ixy] = gaussian_beam_function(A0, W0, z0, k, X, Y, z)
+function [Uxy, Ixy] = gaussian_beam_function(A1, W0, z0, k, X, Y, z)
     % X, Y sono matrici (griglia) con coordinate x e y
     % z è la coordinata assiale dove calcoliamo il campo
+
+    A0 = A1 / (1i * z0); % Ampiezza/fase iniziale
 
     % r^2 = x^2 + y^2
     R2 = X.^2 + Y.^2;
