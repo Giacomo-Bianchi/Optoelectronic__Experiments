@@ -45,7 +45,7 @@ x_vec_real = (dataX(:,1) - mean(dataX(:,1))) * 1e-3;  % µm -> mm
 y_vec_real = (dataY(:,1) - mean(dataY(:,1))) * 1e-3;  % µm -> mm
 
 %% Parametri fisici (in mm)
-lambda = 632.8e-6;     % lunghezza d'onda in mm (632.8 nm = 0.0006328 mm)
+lambda = 1550e-6;     % lunghezza d'onda in mm (632.8 nm = 0.0006328 mm)
 W0     = 1;            % raggio del fascio al waist in mm (1 mm)
 k      = 2*pi / lambda; % numero d'onda [mm^-1]
 z0     = pi * W0^2 / lambda;  % raggio di Rayleigh in mm
