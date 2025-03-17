@@ -40,9 +40,6 @@ vec_real =data(:,1)*1e-3; %(data(:,1) - mean(data(:,1))) * 1e-3;  % µm -> mm
 %% Fitting Dati reali , con funzione parametrizzata
 Ffit = @(a) (a(1) * exp(-2 * (vec_real - a(4)).^2 / a(2)) + a(3));
 
-% Funzione di errore
-errore = @(a)sum((Ffit(a) - data(:,2)).^2);
-
 % Parametri iniziali
 if var == 'X'
     parametri_iniziali = [3000, 1, 218, 3.1];
@@ -50,12 +47,16 @@ else
     parametri_iniziali = [3000, 2, 200, 2.25];
 end
 
-USE_FMINSEARCH = true;
+USE_FMINSEARCH = false;
 USE_FIT = true;
 
 %% ----> fminsearch() <----
 if USE_FMINSEARCH
-% Ottimizzazione dei parametri
+
+    % Funzione di errore
+    errore = @(a)sum((Ffit(a) - data(:,2)).^2);
+
+    % Ottimizzazione dei parametri
     parametri_ottimali_fmin = fminsearch(errore, parametri_iniziali);
     % parametri_ottimali_fmin = parametri_iniziali;
 
@@ -64,9 +65,9 @@ if USE_FMINSEARCH
     % 
     % plot funzione parametrizzata con parametri ottimali
     figure("Name", "Fit con fminsearch");
-    plot(data(:,1), data(:,2), 'LineWidth', 2); % Decommentata per plottare i dati reali
+    plot(vec_real, data(:,2), 'LineWidth', 2); % Decommentata per plottare i dati reali
     hold on;
-    plot(data(:,1), Ffit(parametri_ottimali_fmin), 'LineWidth', 2);
+    plot(vec_real, Ffit(parametri_ottimali_fmin), 'LineWidth', 2);
     title('Profilo Intensità ',var);
     xlabel([var,' [mm]']);
     ylabel('Intensità [Conteggi]');
@@ -90,12 +91,12 @@ if USE_FIT
     gaussModel = fittype('a1*exp(- 2 * (x - a4).^2 / a2) + a3', 'independent', 'x', 'coefficients', {'a1', 'a2', 'a3','a4'});
 
     % Opzioni di fitting
-    fitOptions = fitoptions('Method', 'NonlinearLeastSquares', 'StartPoint', parametri_ottimali_fmin ); % ...
-                            %,'Lower', parametri_ottimali_fmin - [1000,0.01,1,0.001]*10^3,...
-                            %,'Upper', parametri_ottimali_fmin + [1000,0.01,1,0.001]*10^3 );
+    fitOptions = fitoptions('Method', 'NonlinearLeastSquares', ...
+                                'StartPoint', parametri_ottimali_fmin);
+
 
     % Fitting dei dati
-    fitResult = fit(data(:,1), data(:,2), gaussModel, fitOptions);
+    fitResult = fit(vec_real, data(:,2), gaussModel, fitOptions);
 
     % Estrai i parametri ottimali
     parametri_ottimali_fit = coeffvalues(fitResult);
@@ -109,12 +110,17 @@ if USE_FIT
 
     % plot funzione parametrizzata con parametri ottimali
     figure("Name", "Fit con fit()");
-    plot(data(:,1), data(:,2), 'LineWidth', 2); % Decommentata per plottare i dati reali
+    plot(vec_real, data(:,2), 'LineWidth', 2); % Decommentata per plottare i dati reali
     hold on;
-    plot(data(:,1) ,Ffit(parametri_ottimali_fit), 'LineWidth', 2);
+    plot(vec_real ,Ffit(parametri_ottimali_fit), 'LineWidth', 2);
     title('Profilo Intensità ',var);
     xlabel([var,' [mm]']);
     ylabel('Intensità [Conteggi]');
     grid on;
     legend('Dati Reali', 'Fit Ottimale');
+
+    % Weist (raggio!)
+    w_fit = (2*parametri_ottimali_fit(2))^0.5;
+    disp("Weist:")
+    disp(w_fit)
 end
