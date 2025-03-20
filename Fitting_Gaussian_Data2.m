@@ -5,7 +5,7 @@ format long
 
 %% Carico Dataset
 % !!! --> Distanza in Micrometri e Intensità in Conteggi
-addpath('Data1_Camera');
+addpath('Data_2');
 
 %{
  prompt = 'Vuoi leggere i dati del profilo X o Y? (X/Y): ';
@@ -24,10 +24,10 @@ end
 %}
 LoadX = false;
 if LoadX
-    filename = 'Data1_Camera\xprofile.csv';
+    filename = 'Data_2\profilex_2.csv';
     var = 'X';
 else
-    filename = 'Data1_Camera\yprofile.csv';
+    filename = 'Data_2\profiley_2.csv';
     var = 'Y';
 end
 
