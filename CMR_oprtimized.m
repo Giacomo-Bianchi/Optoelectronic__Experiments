@@ -2,46 +2,46 @@ close all
 clear
 clc
 
-% === Percorsi dei file ===
+% === File paths ===
 filepath1 = 'CMR_Data/CMR_OSCILLANTE.txt';
-filepath2 = 'CMR_Data/TwoBeamsCMR000.txt';
+filepath2 = 'CMR_Data/TwoBeamsCMR001.txt';
 filepath3 = 'CMR_Data/TwoBeamsCMRonlyone000.txt';
 
-% === Lettura dati con gestione errori ===
+% === Data reading with error handling ===
 try
     dataOsc = readmatrix(filepath1);
     dataTwoBeams = readmatrix(filepath2);
     dataOneBeam = readmatrix(filepath3);
 catch ME
-    error('Errore nella lettura dei file: %s', ME.message);
+    error('Error reading files: %s', ME.message);
 end
 
-% === Primo grafico: confronto due fasci ON/OFF ===
+% === First plot: comparison two beams ON/OFF ===
 figure;
-plot(dataTwoBeams(:,1), dataTwoBeams(:,2), 'LineWidth', 1.5, 'DisplayName', 'Due fasci ON');
+plot(dataTwoBeams(:,1), dataTwoBeams(:,2), 'LineWidth', 1.5, 'DisplayName', 'Two beams ON');
 hold on;
-plot(dataOneBeam(:,1), dataOneBeam(:,2), 'LineWidth', 1.5, 'DisplayName', 'Un fascio ON');
+plot(dataOneBeam(:,1), dataOneBeam(:,2), 'LineWidth', 1.5, 'DisplayName', 'One beam ON');
 legend('Location', 'best');
-xlabel('Tempo (s)');
-ylabel('Segnale (V)');
-title('Confronto segnale: due fasci vs uno');
+xlabel('Time (s)');
+ylabel('Signal (V)');
+title('Signal comparison: two beams vs one');
 grid on;
 
-% === Secondo grafico: CMR e relativo valore ===
+% === Second plot: CMR and related value ===
 [maxVal, idxMax] = max(dataOsc(:,2));
 relVal = dataOsc(idxMax,3);
 
 figure;
 plot(dataOsc(:,1), dataOsc(:,2), 'LineWidth', 1.5, 'DisplayName', 'CMR');
 hold on;
-plot(dataOsc(:,1), dataOsc(:,3), 'LineWidth', 1.5, 'DisplayName', 'Un solo fascio');
+plot(dataOsc(:,1), dataOsc(:,3), 'LineWidth', 1.5, 'DisplayName', 'One beam only');
 legend('Location', 'best');
-xlabel('Tempo (Hz)');
-ylabel('Valore (dB)');
-title('CMR e confronto con un solo fascio');
+xlabel('Time (Hz)');
+ylabel('Value (dB)');
+title('CMR and comparison with one beam only');
 grid on;
 
-% Evidenzia massimo e relativo
+% Highlight maximum and related value
 plot(dataOsc(idxMax,1), maxVal, 'bo', 'MarkerFaceColor', 'b');
 plot(dataOsc(idxMax,1), relVal, 'ro', 'MarkerFaceColor', 'r');
 text(dataOsc(idxMax,1), maxVal, sprintf(' Max: %.4f', maxVal), ...
