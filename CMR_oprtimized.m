@@ -17,10 +17,17 @@ catch ME
 end
 
 % === First plot: comparison two beams ON/OFF ===
+% Normalizza e trasla il tempo per partire da zero
+tTwoBeams = dataTwoBeams(:,1) - min(dataTwoBeams(:,1));
+tOneBeam = dataOneBeam(:,1) - min(dataOneBeam(:,1));
+tZero = min([tTwoBeams(1), tOneBeam(1)]);
+tTwoBeams = tTwoBeams - tZero;
+tOneBeam = tOneBeam - tZero;
+
 figure;
-plot(dataTwoBeams(:,1), dataTwoBeams(:,2), 'LineWidth', 1.5, 'DisplayName', 'Two beams ON');
+plot(tTwoBeams, dataTwoBeams(:,2), 'LineWidth', 1.5, 'DisplayName', 'Two beams ON');
 hold on;
-plot(dataOneBeam(:,1), dataOneBeam(:,2), 'LineWidth', 1.5, 'DisplayName', 'One beam ON');
+plot(tOneBeam, dataOneBeam(:,2), 'LineWidth', 1.5, 'DisplayName', 'One beam ON');
 legend('Location', 'best');
 xlabel('Time (s)');
 ylabel('Signal (V)');
@@ -36,7 +43,7 @@ plot(dataOsc(:,1), dataOsc(:,2), 'LineWidth', 1.5, 'DisplayName', 'CMR');
 hold on;
 plot(dataOsc(:,1), dataOsc(:,3), 'LineWidth', 1.5, 'DisplayName', 'One beam only');
 legend('Location', 'best');
-xlabel('Time (Hz)');
+xlabel('Freq (Hz)');
 ylabel('Value (dB)');
 title('CMR and comparison with one beam only');
 grid on;

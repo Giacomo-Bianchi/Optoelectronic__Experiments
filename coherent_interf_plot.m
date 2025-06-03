@@ -1,11 +1,11 @@
-% Script per plottare i dati di CMRR1.txt
-clear ;clc; close all;
-% Leggi i dati dal file (usa il separatore ',')
+% Script to plot data from CMRR1.txt
+clear; clc; close all;
+% Read data from file (using ',' as separator)
 data_Coherent = readmatrix('Coherent_state.txt');
 data_Interference = readmatrix('Interference000.txt');
 data_Interference_neg = readmatrix('Interferenceneg000.txt');
 
-% Estrai le colonne
+% Extract columns
 xc = data_Coherent(:,1);
 yc = data_Coherent(:,2);
 
@@ -15,15 +15,18 @@ yi = data_Interference(:,2);
 xin = data_Interference_neg(:,1);
 yin = data_Interference_neg(:,2);
 
+% Shift time so it starts from 0
+xc = xc - xc(1);
+xi = xi - xi(1);
+xin = xin - xin(1);
 
-% Crea il plot
+% Create the plot
 figure;
 plot(xc, yc, 'DisplayName', 'Coherent State');
 xlabel('Time (s)');
-ylabel('Valori');
+ylabel('Values');
 legend;
-title('Coherent State ');
-
+title('Coherent State');
 grid on;
 
 figure;
@@ -32,7 +35,63 @@ plot(xi, yi, 'DisplayName', 'Interference');
 plot(xin, yin, 'DisplayName', 'Interference Neg');
 plot(xc, yc, 'DisplayName', 'Coherent State');
 xlabel('Time (s)');
-ylabel('Valori');
+ylabel('Values');
 title('Interference');
 legend;
 grid on;
+
+
+%% Variance analysis Coherent State solo sui primi 'points'
+PLOT_VAR_ERRORS = false; % <-- Imposta a true per abilitare il plot degli errori
+points = 50000; % <-- Scegli quanti punti vuoi considerare
+N = 50;       % Numero di punti per finestra
+
+% Prendi solo i primi 'points' valori
+yc_sel = yc(1:points);
+xc_sel = xc(1:points);
+
+num_windows = floor(length(yc_sel)/N);
+
+variances = zeros(num_windows,1);
+central_times = zeros(num_windows,1);
+
+for i = 1:num_windows
+    idx_start = (i-1)*N + 1;
+    idx_end = i*N;
+    window = yc_sel(idx_start:idx_end);
+    variances(i) = var(window);
+    central_times(i) = mean(xc_sel(idx_start:idx_end));
+end
+
+errors = sqrt(2./(N-1)) .* variances;
+
+% Plot istogramma della varianza nel tempo e segnale coerente
+figure;
+yyaxis left
+hBar = bar(central_times, variances, 1, 'DisplayName', 'Variance');
+ylabel('Variance');
+ylim([0 max(variances) * 1.1]);
+
+hold on
+if PLOT_VAR_ERRORS
+    % Plot error bars if enabled
+    
+    hErr = errorbar(central_times, variances, errors, 'k.', 'MarkerSize', 10, 'LineWidth', 1.5, 'DisplayName', 'Error Bars');
+    yline(0, 'k--', 'LineWidth', 1.5, 'DisplayName', 'Zero Line');
+end
+
+yyaxis right
+hPlot = plot(xc_sel, yc_sel, 'r', 'DisplayName', 'Coherent State');
+ylabel('Coherent State Signal');
+ylim([min(yc_sel) max(yc_sel)]);
+
+xlabel('Time (s)');
+title(['Variance and Coherent State Signal (first ' num2str(points) ' points, windows of ' num2str(N) ')']);
+grid on;
+
+if PLOT_VAR_ERRORS
+    legend([hBar hErr hPlot], {'Variance', 'Error Bars', 'Coherent State'}, 'Location', 'best');
+else
+    legend([hBar hPlot], {'Variance', 'Coherent State'}, 'Location', 'best');
+end
+hold off
