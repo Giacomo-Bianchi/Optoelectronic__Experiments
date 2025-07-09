@@ -27,7 +27,7 @@ disp(['Interference percentage: ' num2str(interf_percent) '%']);
 figure;
 plot(xc, yc, 'DisplayName', 'Coherent State');
 xlabel('Time (s)');
-ylabel('Values');
+ylabel('Values (V)');
 legend;
 title('Coherent State');
 grid on;
@@ -38,7 +38,7 @@ plot(xi, yi, 'DisplayName', 'Interference');
 plot(xin, yin, 'DisplayName', 'Interference Neg');
 plot(xc, yc, 'DisplayName', 'Coherent State');
 xlabel('Time (s)');
-ylabel('Values');
+ylabel('Values (V)');
 title('Interference');
 legend;
 grid on;
@@ -73,7 +73,7 @@ errors = sqrt(2./(N-1)) .* variances; % Calcolo dell'errore standard della varia
 figure;
 yyaxis left
 hBar = bar(central_times, variances, 1, 'DisplayName', 'Variance');
-ylabel('Variance');
+ylabel('Variance (V)');
 ylim([0 max(variances) * 1.1]);
 
 hold on
@@ -105,7 +105,7 @@ hold off
 figure;
 plot(central_times, errors, 'DisplayName', 'Errors');
 xlabel('Time (s)');
-ylabel('Error');
+ylabel('Error (V)');
 title('Error in Variance Calculation');
 grid on;
 legend('Location', 'best');
@@ -117,7 +117,7 @@ hold on;
 plot(xi, yi + yin, 'DisplayName', 'Sum of Interference and Interference Neg');
 plot(xc, yc, 'DisplayName', 'Coherent State');
 xlabel('Time (s)');
-ylabel('Values');
+ylabel('Values (V)');
 title('Interference sum');
 legend;
 grid on;
