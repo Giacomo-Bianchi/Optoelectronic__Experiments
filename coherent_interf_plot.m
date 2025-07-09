@@ -20,6 +20,9 @@ xc = xc - xc(1);
 xi = xi - xi(1);
 xin = xin - xin(1);
 
+% calcolo valore interferenza in percentuale
+interf_percent = (max(movmean(yi,10)) - min(movmean(yi,10)))/(max(movmean(yi,10)) + min(movmean(yi,10))) * 100;
+disp(['Interference percentage: ' num2str(interf_percent) '%']);
 % Create the plot
 figure;
 plot(xc, yc, 'DisplayName', 'Coherent State');
@@ -44,7 +47,7 @@ grid on;
 %% Variance analysis Coherent State solo sui primi 'points'
 PLOT_VAR_ERRORS = false; % <-- Imposta a true per abilitare il plot degli errori
 points = 50000; % <-- Scegli quanti punti vuoi considerare
-N = 50;       % Numero di punti per finestra
+N = 150;       % Numero di punti per finestra
 
 % Prendi solo i primi 'points' valori
 yc_sel = yc(1:points);
@@ -63,7 +66,8 @@ for i = 1:num_windows
     central_times(i) = mean(xc_sel(idx_start:idx_end));
 end
 
-errors = sqrt(2./(N-1)) .* variances;
+errors = sqrt(2./(N-1)) .* variances; % Calcolo dell'errore standard della varianza
+
 
 % Plot istogramma della varianza nel tempo e segnale coerente
 figure;
@@ -86,7 +90,7 @@ ylabel('Coherent State Signal');
 ylim([min(yc_sel) max(yc_sel)]);
 
 xlabel('Time (s)');
-title(['Variance and Coherent State Signal (first ' num2str(points) ' points, windows of ' num2str(N) ')']);
+title(['Variance and Coherent State Signal (first ' num2str(points) ' points, windows of ' num2str(N) 'points)']);
 grid on;
 
 if PLOT_VAR_ERRORS
@@ -95,3 +99,26 @@ else
     legend([hBar hPlot], {'Variance', 'Coherent State'}, 'Location', 'best');
 end
 hold off
+
+
+
+figure;
+plot(central_times, errors, 'DisplayName', 'Errors');
+xlabel('Time (s)');
+ylabel('Error');
+title('Error in Variance Calculation');
+grid on;
+legend('Location', 'best');
+
+
+% Plot della somma di yi e yn 
+figure;
+hold on;
+plot(xi, yi + yin, 'DisplayName', 'Sum of Interference and Interference Neg');
+plot(xc, yc, 'DisplayName', 'Coherent State');
+xlabel('Time (s)');
+ylabel('Values');
+title('Interference sum');
+legend;
+grid on;
+hold off;
